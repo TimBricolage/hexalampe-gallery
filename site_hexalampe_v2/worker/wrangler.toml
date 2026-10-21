@@ -1,0 +1,14 @@
+# Configuration du Worker (utilisée si vous déployez avec l'outil "wrangler").
+# Si vous déployez par le tableau de bord Cloudflare, ces valeurs se saisissent dans
+# Settings > Variables and Secrets (voir GUIDE_INSTALLATION.md).
+name = "hexalampe-gallery"
+main = "worker.js"
+compatibility_date = "2024-09-01"
+
+[vars]
+GITHUB_REPO = "VOTRE_COMPTE/VOTRE_DEPOT"
+GITHUB_BRANCH = "main"
+ALLOWED_ORIGIN = "https://VOTRE_COMPTE.github.io"
+MAX_PER_HOUR = "5"
+
+# Le jeton GitHub est un SECRET, à ajouter avec :  npx wrangler secret put GITHUB_TOKEN

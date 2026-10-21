@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HexaLamp</title>
+<meta name="description" content="HexaLamp - Configurateur de lampes hexagonales modulaires / Modular hexagonal lamp configurator">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2l8.66 5v10L12 22l-8.66-5V7z' fill='%2300121c' stroke='%2300e5ff' stroke-width='2'/%3E%3C/svg%3E">
+</head>
+<body>
+
+<!-- ============ EN-TÊTE ============ -->
+<header id="topbar">
+  <div class="brand">
+    <svg class="ico" viewBox="0 0 24 24"><path d="M12 2l8.66 5v10L12 22l-8.66-5V7z"/></svg>
+    <span>HEXALAMP</span>
+  </div>
+
+  <nav class="tabs">
+    <button class="tab active" data-view="config" data-i18n="tabCfg">Configurateur</button>
+    <button class="tab" data-view="gallery" data-i18n="tabGal">Galerie</button>
+  </nav>
+
+  <div class="lang-wrap">
+    <button id="lang-btn" class="icon-btn" data-i18n-title="language" aria-haspopup="true" aria-expanded="false">
+      <svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><path d="M2.5 12h19"/><path d="M12 2.5c2.8 2.9 4.2 6.1 4.2 9.5s-1.4 6.6-4.2 9.5c-2.8-2.9-4.2-6.1-4.2-9.5S9.2 5.4 12 2.5z"/></svg>
+      <span id="lang-current">FR</span>
+    </button>
+    <div id="lang-menu" class="glass" hidden></div>
+  </div>
+</header>
+
+<!-- ============ VUE CONFIGURATEUR ============ -->
+<main id="view-config" class="view">
+  <section id="left" class="glass panel">
+    <div class="panel-head">
+      <svg class="ico big" viewBox="0 0 24 24"><path d="M12 2l8.66 5v10L12 22l-8.66-5V7z"/></svg>
+      <h3 data-i18n="thickness">Épaisseur</h3>
+    </div>
+    <div class="size-list">
+      <button class="size active" data-size="1">
+        <svg class="ico" viewBox="0 0 24 24"><path d="M12 3l7.8 4.5v9L12 21l-7.8-4.5v-9z"/></svg>
+        <span data-i18n="s1">Petit (1)</span>
+      </button>
+      <button class="size" data-size="2">
+        <svg class="ico" viewBox="0 0 24 24"><path d="M12 3l7.8 4.5v9L12 21l-7.8-4.5v-9z"/><path d="M12 8l3.5 2v4L12 16l-3.5-2v-4z" class="fill"/></svg>
+        <span data-i18n="s2">Moyen (2)</span>
+      </button>
+      <button class="size" data-size="3">
+        <svg class="ico" viewBox="0 0 24 24"><path d="M12 3l7.8 4.5v9L12 21l-7.8-4.5v-9z"/><path d="M12 6.5l4.8 2.8v5.4L12 17.5l-4.8-2.8V9.3z" class="fill"/></svg>
+        <span data-i18n="s3">Grand (3)</span>
+      </button>
+      <button class="size" data-size="4">
+        <svg class="ico" viewBox="0 0 24 24"><path d="M12 3l9 4.5-9 4.5-9-4.5z"/><path d="M3 12l9 4.5 9-4.5"/><path d="M3 16.5L12 21l9-4.5"/></svg>
+        <span data-i18n="s4">Grand avec lumière (4)</span>
+      </button>
+    </div>
+  </section>
+
+  <section id="center">
+    <div class="stage">
+      <canvas id="grid"></canvas>
+    </div>
+    <p class="hint" data-i18n="hintGrid">Cliquez sur la grille pour poser ou retirer un hexagone</p>
+  </section>
+
+  <section id="right" class="glass panel">
+    <div class="panel-head">
+      <svg class="ico big" viewBox="0 0 24 24"><path d="M12 2.5l8.5 4.7v9.6L12 21.5l-8.5-4.7V7.2z"/><path d="M12 12l8.5-4.8M12 12L3.5 7.2M12 12v9.5"/></svg>
+      <h3 data-i18n="render3d">Rendu 3D</h3>
+    </div>
+    <div id="three-wrapper">
+      <button id="fullscreen-btn" class="icon-btn small" data-i18n-title="fullscreen">
+        <svg class="ico" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+      </button>
+      <div id="three-container"></div>
+    </div>
+    <p class="hint small" data-i18n="hint3d"></p>
+  </section>
+</main>
+
+<!-- ============ VUE GALERIE ============ -->
+<main id="view-gallery" class="view" hidden>
+  <section class="glass gallery-panel">
+    <div class="gallery-head">
+      <h2 data-i18n="galTitle">Galerie des créations</h2>
+      <p data-i18n="galSub"></p>
+    </div>
+    <div id="gallery-status" class="gallery-status"></div>
+    <div id="gallery-grid" class="gallery-grid"></div>
+    <div class="gallery-more"><button id="gallery-more" class="btn ghost" data-i18n="galMore" hidden>Voir plus</button></div>
+  </section>
+</main>
+
+<!-- ============ BARRE DU BAS ============ -->
+<footer id="bottom">
+  <span class="glow-line"></span>
+  <button id="validate" class="btn primary">
+    <svg class="ico" viewBox="0 0 24 24"><path d="M4.5 12.5l5 5 10-11"/></svg>
+    <span data-i18n="validate">Valider ma configuration</span>
+  </button>
+  <span class="glow-line"></span>
+  <button id="share" class="btn ghost">
+    <svg class="ico" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+    <span data-i18n="share">Ajouter à la galerie</span>
+  </button>
+</footer>
+
+<!-- ============ MODALE : AJOUTER À LA GALERIE ============ -->
+<div id="share-modal" class="modal" hidden>
+  <div class="modal-box glass">
+    <h3 data-i18n="shareTitle"></h3>
+    <p class="muted" data-i18n="shareDesc"></p>
+    <div id="share-preview" class="share-preview"></div>
+    <label for="share-name" data-i18n="shareName"></label>
+    <input id="share-name" type="text" maxlength="30" autocomplete="nickname" data-i18n-placeholder="sharePh">
+    <!-- champ piège anti-robots (invisible) -->
+    <input id="share-website" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" class="hp">
+    <p id="share-msg" class="msg" role="status"></p>
+    <div class="modal-actions">
+      <button id="share-cancel" class="btn ghost" data-i18n="cancel"></button>
+      <button id="share-ok" class="btn primary" data-i18n="shareOk"></button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODALE : VOIR UN MODÈLE DE LA GALERIE ============ -->
+<div id="model-modal" class="modal" hidden>
+  <div class="modal-box glass wide">
+    <button id="model-close" class="icon-btn small close" data-i18n-title="close">
+      <svg class="ico" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <h3 id="model-title"></h3>
+    <p id="model-sub" class="muted"></p>
+    <div id="model-viewer" class="model-viewer"></div>
+    <p class="hint small" data-i18n="hint3d"></p>
+    <div class="modal-actions">
+      <button id="model-edit" class="btn ghost" data-i18n="galEdit"></button>
+      <button id="model-download" class="btn primary">
+        <svg class="ico" viewBox="0 0 24 24"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg>
+        <span data-i18n="galDownload"></span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast" hidden></div>
+
+<script src="libs/three.min.js"></script>
+<script src="libs/jspdf.umd.min.js"></script>
+<script src="config.js"></script>
+<script src="i18n.js"></script>
+<script src="lang/fr.js"></script>
+<script src="lang/en.js"></script>
+<script src="viewer.js"></script>
+<script src="notice.js"></script>
+<script src="app.js"></script>
+<script src="gallery.js"></script>
+
+<script data-goatcounter="https://timbricolage.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
